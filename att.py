@@ -30,7 +30,7 @@ from bs4 import BeautifulSoup
 from docopt import docopt
 
 
-__version__ = '0.1.4'
+__version__ = '0.1.5'
 
 
 class Att:
@@ -60,7 +60,6 @@ class Att:
             date_from = date_from.format('MM/DD/YY')
         if isinstance(date_to, arrow.arrow.Arrow):
             date_to = date_to.format('MM/DD/YYYY')
-        print date_from, date_to
         payload = {
             'struts.token.name': 'struts.token',
             'struts.token': self.getFormToken(),
