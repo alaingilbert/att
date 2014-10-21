@@ -30,7 +30,7 @@ from bs4 import BeautifulSoup
 from docopt import docopt
 
 
-__version__ = '0.1.1'
+__version__ = '0.1.4'
 
 
 class Att:

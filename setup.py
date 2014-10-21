@@ -7,7 +7,6 @@ MODULE_NAME = 'att'
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 INIT = open(os.path.join(HERE, '{0}.py'.format(MODULE_NAME))).read()
-README = open(os.path.join(HERE, 'README.md')).read()
 VERSION = re.search("__version__ = '([^']+)'", INIT).group(1)
 
 
@@ -17,7 +16,6 @@ setup(name=MODULE_NAME,
       author_email='alain.gilbert.15@gmail.com',
       url='https://github.com/alaingilbert/att',
       description='Extract informations from att website.',
-      long_description=README,
       license='MIT',
       keywords='att',
       classifiers=['Environment :: Console',
@@ -29,5 +27,5 @@ setup(name=MODULE_NAME,
                    'Programming Language :: Python :: 2.7',
                    #'Programming Language :: Python :: 3.2',
                    'Topic :: Utilities'],
-      install_requires=['arrow', 'beautifulsoup4', 'requests'],
+      install_requires=['arrow', 'beautifulsoup4', 'requests', 'docopt'],
       py_modules=[MODULE_NAME])
