@@ -1,32 +1,46 @@
 #!/usr/bin/env python
 
+"""AT&T
+
+Usage:
+  att.py
+  att.py --phone PHONE --code CODE
+  att.py --from FROM
+  att.py --from FROM --to TO
+  att.py --phone PHONE --code CODE --from FROM --to TO
+  att.py (-h | --help)
+  att.py --version
+
+Options:
+  -h --help         Show this screen.
+  -v --version      Show version.
+  -p --phone        Phone number.
+  -c --code         AT&T 4 digits code.
+  -f --from         Date from (MM/DD/YYYY).
+  -t --to           Date to (MM/DD/YYYY).
+
+"""
+
 import os
 import sys
 import requests
 import arrow
 from bs4 import BeautifulSoup
+from docopt import docopt
 
 
-__version__ = '0.0.3'
-
-
-PHONE = os.environ.get('PHONE')
-PASSWORD = os.environ.get('PASSWORD')
-DATE_FROM = '10/16/2014'
-DATE_TO = '10/20/2014'
+__version__ = '0.1.0'
 
 
 class Att:
-    def __init__(self, phone, password):
+    def __init__(self, phone, code):
         self.session = requests.Session()
-        self.phone = phone
-        self.password = password
         self.endpoint = 'https://www.paygonline.com/websc'
-        self.login()
+        self.login(phone, code)
 
 
-    def login(self):
-        r = self.session.post('%s/logon.html' % self.endpoint, {'phoneNumber': PHONE, 'password': PASSWORD})
+    def login(self, phone, code):
+        r = self.session.post('%s/logon.html' % self.endpoint, {'phoneNumber': phone, 'password': code})
         soup = BeautifulSoup(r.text)
         err = soup.find(id="error")
         if err:
@@ -40,16 +54,25 @@ class Att:
         return soup.find('input', {'name': 'struts.token'}).get('value')
 
 
-    def getEvents(self, event_type):
+    def getEvents(self, event_type, date_from, date_to):
+        if isinstance(date_from, arrow.arrow.Arrow):
+            date_from = date_from.format('MM/DD/YY')
+        if isinstance(date_to, arrow.arrow.Arrow):
+            date_to = date_to.format('MM/DD/YYYY')
+        print date_from, date_to
         payload = {
             'struts.token.name': 'struts.token',
             'struts.token': self.getFormToken(),
-            'datefrom': DATE_FROM,
-            'dateto': DATE_TO,
+            'datefrom': date_from,
+            'dateto': date_to,
             'historyTypeCode': event_type,
         }
         r = self.session.post('%s/historyrequest.html' % self.endpoint, payload)
         soup = BeautifulSoup(r.text)
+        err = soup.find(id="error")
+        if err:
+            print err.find('p').text.strip()
+            sys.exit(0)
         calls = soup.find_all('div', {'class': 'property-details'})
         results = []
 
@@ -75,9 +98,28 @@ class Att:
         return results
 
 
-    def getVoices(self):
-        return self.getEvents('VOICE')
+    def getVoices(self, date_from, date_to):
+        return self.getEvents('VOICE', date_from, date_to)
 
 
-    def getMessaging(self):
-        return self.getEvents('DATA_MESSAGING')
+    def getMessaging(self, date_from, date_to):
+        return self.getEvents('DATA_MESSAGING', date_from, date_to)
+
+
+    def getAllEvents(self, date_from, date_to):
+        return self.getVoices(date_from, date_to) + self.getMessaging(date_from, date_to)
+
+
+def main():
+    args = docopt(__doc__, version=__version__)
+    PHONE = args.get('PHONE') or os.environ.get('PHONE')
+    CODE = args.get('CODE') or os.environ.get('CODE')
+    DATE_FROM = args.get('FROM') or arrow.now().replace(months=-1)
+    DATE_TO = args.get('TO') or arrow.now()
+
+    att = Att(PHONE, CODE)
+    print att.getAllEvents(DATE_FROM, DATE_TO)
+
+
+if __name__ == '__main__':
+    main()

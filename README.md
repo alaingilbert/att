@@ -1,17 +1,33 @@
 # Install
 
+### Using pip
+
 ```
 pip install att
 ```
 
-or
+### From sources
 
 ```
-pip install -r requirements.txt
+python setup.py install
 ```
 
-You must have `PHONE` and `PASSWORD` in your environment variables.
-
+# Usage
 ```
-./att.py
+Usage:
+  att.py
+  att.py --phone PHONE --code CODE
+  att.py --from FROM
+  att.py --from FROM --to TO
+  att.py --phone PHONE --code CODE --from FROM --to TO
+  att.py (-h | --help)
+  att.py --version
+
+Options:
+  -h --help         Show this screen.
+  -v --version      Show version.
+  -p --phone        Phone number.
+  -c --code         AT&T 4 digits code.
+  -f --from         Date from (MM/DD/YYYY).
+  -t --to           Date to (MM/DD/YYYY).
 ```
