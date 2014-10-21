@@ -7,6 +7,7 @@ Usage:
   att.py --phone PHONE --code CODE
   att.py --from FROM
   att.py --from FROM --to TO
+  att.py --phone PHONE --code CODE --from FROM
   att.py --phone PHONE --code CODE --from FROM --to TO
   att.py (-h | --help)
   att.py --version
@@ -29,7 +30,7 @@ from bs4 import BeautifulSoup
 from docopt import docopt
 
 
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 
 class Att:

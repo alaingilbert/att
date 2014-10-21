@@ -19,6 +19,7 @@ Usage:
   att.py --phone PHONE --code CODE
   att.py --from FROM
   att.py --from FROM --to TO
+  att.py --phone PHONE --code CODE --from FROM
   att.py --phone PHONE --code CODE --from FROM --to TO
   att.py (-h | --help)
   att.py --version
@@ -31,3 +32,5 @@ Options:
   -f --from         Date from (MM/DD/YYYY).
   -t --to           Date to (MM/DD/YYYY).
 ```
+
+The `PHONE` and `CODE` can be retreived from your environment variables.
