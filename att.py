@@ -5,10 +5,9 @@ import sys
 import requests
 import arrow
 from bs4 import BeautifulSoup
-from pymongo import MongoClient
 
 
-__version__ = '0.0.1'
+__version__ = '0.0.3'
 
 
 PHONE = os.environ.get('PHONE')
@@ -82,26 +81,3 @@ class Att:
 
     def getMessaging(self):
         return self.getEvents('DATA_MESSAGING')
-
-
-def main():
-    att = Att(PHONE, PASSWORD)
-    evts = att.getVoices()
-    evts += att.getMessaging()
-
-    client = MongoClient()
-    db = client.test_database
-    events = db.events
-    count = 0
-    for evt in evts:
-        key = {'type': evt['type'], 'date': evt['date']}
-        res = events.update(key, evt, True)
-        if not res['updatedExisting']:
-            count += 1
-
-    print '%s documents fetched' % len(evts)
-    print '%s new documents' % count
-
-
-if __name__ == '__main__':
-    main()
