@@ -26,6 +26,7 @@ import os
 import sys
 import requests
 import arrow
+import json
 from bs4 import BeautifulSoup
 from docopt import docopt
 
@@ -118,7 +119,7 @@ def main():
     DATE_TO = args.get('TO') or arrow.now()
 
     att = Att(PHONE, CODE)
-    print att.getAllEvents(DATE_FROM, DATE_TO)
+    print json.dumps(att.getAllEvents(DATE_FROM, DATE_TO))
 
 
 if __name__ == '__main__':
